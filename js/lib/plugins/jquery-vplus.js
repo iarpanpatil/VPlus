@@ -88,7 +88,7 @@
                             var elem = $(field);
                             var method = rules[selector][rule];
 
-                            //this allows us to get a value froim a input field or the text from an editable area
+                            //this allows us to get a value from a input field or the text from an editable area
                             var val = (typeof elem.val === 'undefined')? elem.text(): elem.val();
 
                             if (!plugin[rule](val, method.expected, elem)) {

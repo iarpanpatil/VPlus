@@ -1,95 +1,102 @@
-describe("vplus  jQuery Plugin Suite", function () {
+/**
+ * Depends:
+ * jquery
+ * @extends jQuery.fn
+ */
+/*
+ $("#mySelector").vplus({
+ rules:{
+ ".hello-world":{
+ isRequired:true
+ }
+ }
+ });
+ */
+(function ($) {
+    /**
+     * Add the plugin to the jQuery prototype
+     * @param {object} options
+     * @return {function}
+     * @this {jQuery}
+     * @constructor
+     */
+    $.fn.vplus = function (options) {
 
-    //setup
-    beforeEach(function () {
-        /*:DOC +=
-         <form id="my-form">
-         <input type="text" class="hello-world" value="hello world">
-         <input type="text" class="hello-world" id="long-text-field" value="sdahfsadjkhffjhdsfjhdfkgjhfbdhsadfasdf">
-         <input type="text" id="empty-field">
-         <textarea class="hello-world">text-area</textarea>
-         <div id="my-div"></div>
-         </form>
+        //return of no options exist
+        if (options === undefined) {
+            throw new Error("No options provided");
+        }
+        var defaults = {
+            errorClass:'error',
+            expressions:{
+                email:'',
+                url:''
+            }
+        };
+        var validates = true;
+        options = $.extend(defaults, options);
+        var plugin = $.fn.vplus;
+        /**
+         * @param {String} val
+         * @return {Boolean}
          */
-    });
-
-    //teardown
-    afterEach(function () {
-        $('#my-form').remove();
-    });
-
-    //test
-    it("isRequired rule fails class and label added", function () {
-        $('#my-form').vplus({
-            rules: {
-                "#empty-field": {
-                    isRequired: {
-                        expected: true,
-                        errorMsg: 'Field is required'
+        plugin.isRequired = function (val) {
+            return (val != '');
+        };
+        /**
+         * @param {String} val
+         * @param {Number} expected
+         * @return {Boolean}
+         */
+        plugin.maxLength = function (val, expected) {
+            return (val.length <= expected);
+        };
+        /**
+         * @param {String} val
+         * @param {Number} expected
+         * @return {Boolean}
+         */
+        plugin.minLength = function (val, expected) {
+            return (val.length >= expected);
+        };
+        /**
+         * @example DD/MM/YYYY or DD-MM-YYYY
+         * @param {String} val
+         * @return {Boolean}
+         */
+        plugin.isValidDate = function (val) {
+            var regex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+            return val.search(regex) !== -1;
+        };
+        var $form = $(this);
+        var rules = options.rules;
+        $form.find('.validation-rules').remove();
+        plugin.setCheck = function ($elem, rule, msg) {
+            if (plugin.hasOwnProperty(rule)) {
+                $elem.blur(function () {
+                    var value = $(this).val();
+                    var $self = $(this);
+                    var $label = $self.next();
+                    if (!plugin[rule](value)) {
+                        if ($label.is('label')) {
+                            $label.html(msg);
+                        } else {
+                            $self.after('<label>' + msg + '</label>');
+                        }
+                    } else {
+                        if ($label.is('label')) {
+                            $label.remove();
+                        }
                     }
-                }
+                });
             }
-        });
-
-        var field = $('#empty-field');
-        expect(field.hasClass('error')).toEqual(true);
-        expect(field.next('label').text()).toEqual('Field is required');
-    });
-
-
-    it("minLength rule fails class and label added", function () {
-        $('#my-form').vplus({
-            rules: {
-                "#empty-field": {
-                    minLength: {
-                        expected: 12,
-                        errorMsg: 'Text too short'
-                    }
-                }
+        };
+        for (var sel in rules) {
+            for (var rule in rules[sel]) {
+                var group = rules[sel][rule];
+                var errorMsg = group['errorMsg']? group['errorMsg']: '';
+                plugin.setCheck($(sel), rule, errorMsg);
             }
-        });
-
-        var field = $('#empty-field');
-        expect(field.hasClass('error')).toEqual(true);
-        expect(field.next('label').text()).toEqual('Text too short');
-    });
-
-    it("if maxLength rule fails class and label added", function () {
-        $('#my-form').vplus({
-            rules: {
-                "#long-text-field": {
-                    maxLength: {
-                        expected: 12,
-                        errorMsg: 'Text too long'
-                    }
-                }
-            }
-        });
-        var field = $('#long-text-field');
-        expect(field.hasClass('error')).toEqual(true);
-        expect(field.next('label').text()).toEqual('Text too long');
-    });
-
-    it("element content can be validated", function () {
-        $('#my-form').vplus({
-            rules: {
-                "#my-div": {
-                    isRequired:{
-                        errorMsg:'Div not allowed empty'
-                    }
-                }
-            }
-        });
-        var field = $('#my-div');
-        expect(field.hasClass('error')).toEqual(true);
-        expect(field.next('label').text()).toEqual('Div not allowed empty');
-    });
-
-    it("no options passed throws error", function () {
-        expect(function() {
-            $('#my-form').vplus();
-        }).toThrow(new Error("No options provided"));
-    });
-
-
-});
+        }
+    };
+}(jQuery));
