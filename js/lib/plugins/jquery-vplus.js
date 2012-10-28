@@ -1,113 +1,75 @@
-/**
- * Depends:
- * jquery
- * @extends jQuery.fn
- */
 (function ($) {
-
-    /**
-     * Add the plugin to the jQuery prototype
-     * @param {object} options
-     * @return {function}
-     * @this {jQuery}
-     * @constructor
-     * @example
-     * $("#mySelector").vplus({rules: { ".hello-world": { isRequired: true  }}});
-     */
-    $.fn.vplus = function (options) {
-
-        //return of no options exist
-        if (options === undefined) {
-            throw new Error("No options provided");
-        }
-
-        var defaults = {
-            errorClass: 'error',
-            expressions: {
-                email: '',
-                url: ''
-            }
-        };
-
-        options = $.extend(defaults, options);
-
-        var plugin = $.fn.vplus;
-
-        /**
-         * @param {String} val
-         * @return {Boolean}
-         */
-        plugin.isRequired = function (val) {
+    $.widget('o1software.vplus', {
+        options:{
+            errorClass:'error'
+        },
+        isRequired:function (val) {
             return (val != '');
-        };
-
-        /**
-         * @param {string} val
-         * @param {string} expected
-         */
-        plugin.isEmail = function (val, expected) {
-            //TODO: implement this
-        };
-
-        /**
-         * @param {String} val
-         * @param {Number} expected
-         * @return {Boolean}
-         */
-        plugin.maxLength = function (val, expected) {
+        },
+        maxLength:function (val, expected) {
             return (val.length <= expected);
-        };
-
-        /**
-         * @param {String} val
-         * @param {Number} expected
-         * @return {Boolean}
-         */
-        plugin.minLength = function (val, expected) {
+        },
+        minLength:function (val, expected) {
             return (val.length >= expected);
-        };
-
-        //do this so we can ensure chaining
-        return this.each(function () {
-
-            //makes searches inside this plugin faster
-            var form = $(this);
-            var rules = options.rules;
-
-            //iterate over each selector
-            for (var selector in rules) {
-
-                //iterate over each validation rule per selector
-                for (var rule in rules[selector]) {
-
-                    //check the selector properties are validation rule names
-                    if (plugin.hasOwnProperty(rule)) {
-
-                        //iterate over every selector rule
-                        $.each(form.find(selector), function (k, field) {
-                            var elem = $(field);
-                            var method = rules[selector][rule];
-
-                            //this allows us to get a value from a input field or the text from an editable area
-                            var val = (typeof elem.val === 'undefined')? elem.text(): elem.val();
-
-                            if (!plugin[rule](val, method.expected, elem)) {
-
-                                if (typeof method.callBack !== 'function') {
-
-                                    //add the error message as a label
-                                    if (method.errorMsg) {
-                                        elem.after('<label>' + method.errorMsg + '</label>');
-                                    }
-                                } else {
-                                    method.callBack(elem);
-                                }
-                                elem.addClass(options.errorClass);
+        },
+        isValidDate:function (val) {
+            var regex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+            return val.search(regex) !== -1;
+        },
+        validate:function () {
+            var self = this;
+            var options = self.options;
+            var valid = true;
+            for (var selector in options.rules) {
+                $(self.element).find(selector).each(function (key, value) {
+                    var $elem = $(value);
+                    for (var method in options.rules[selector]) {
+                        var params = options.rules[selector][method];
+                        if (!self[method]($elem.val(), params.expected)) {
+                            self._markError($elem, params.errorMsg);
+                            valid = false;
+                        } else {
+                            self._removeError($elem);
+                        }
+                    }
+                });
+            }
+            return valid;
+        },
+        _create:function () {
+            var self = this;
+            var options = self.options;
+            for (var selector in options.rules) {
+                $(self.element).find(selector).each(function (key, value) {
+                    var $elem = $(value);
+                    for (var method in options.rules[selector]) {
+                        var params = options.rules[selector][method];
+                        $elem.blur(function () {
+                            if (!self[method]($elem.val(), params.expected)) {
+                                self._markError($elem, params.errorMsg);
+                            } else {
+                                self._removeError($elem);
                             }
                         });
                     }
-                }
+                });
             }
-        });
-    };
+        },
+        _markError:function ($element, errorMsg) {
+            var $next = $element.next();
+            if (!$next.is('label')) {
+                $element.after('<label>' + errorMsg + '</label>')
+            } else {
+                $next.html(errorMsg);
+            }
+            $element.addClass(this.options.errorClass);
+        },
+        _removeError:function ($element) {
+            var $next = $element.next();
+            if ($next.is('label')) {
+                $next.remove();
+            }
+            $element.removeClass(this.options.errorClass);
+        }
+    });
 }(jQuery));
