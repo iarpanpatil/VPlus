@@ -24,14 +24,37 @@
 <script src="js/jquery.vplus.js"></script>
 <script>
     $(function($) {
-        $('#myForm').vplus(
+        $('#myForm').vPlus(
                 {
                     rules: {
                         '#email': {
                             isRequired: {
                                 expect: true,
                                 errorMsg: 'we have an issue'
-
+                            }
+                        },
+                        '#password': {
+                            isRequired: {
+                                expected: true,
+                                errorMsg: 'Please enter a password'
+                            },
+                            minLength: {
+                                expected: 6,
+                                errorMsg: 'Password must be at least 6 chars'
+                            },
+                            maxLength: {
+                                expected: 15,
+                                errorMsg: 'Password cannot be more than 15 chars.'
+                            }
+                        },
+                        '#password2':{
+                            isRequired: {
+                                expected: true,
+                                errorMsg: 'Please re-enter the password'
+                            },
+                            equalElementValue:{
+                                expected: '#password',
+                                errorMsg: 'Passwords do not match'
                             }
                         }
                     }

@@ -2,7 +2,7 @@
   /**
    * @param {object} config
    */
-  $.fn.vplus = function(config) {
+  $.fn.vPlus = function(config) {
 
     var defaults = {
       errorClass: 'error',
@@ -55,13 +55,18 @@
       return val.search(regex) !== -1;
     };
 
-    plugin.setCheck = function($elem, rule, msg) {
+
+    plugin.equalElementValue = function (val, expected) {
+        return (val === $(expected).val());
+    };
+
+    plugin.setCheck = function($elem, rule,expected, msg) {
       if (plugin.hasOwnProperty(rule)) {
         $elem.blur(function() {
           var $self = $(this);
           var $label = $self.next();
 
-          if (!plugin[rule]($self.val())) {
+          if (!plugin[rule]($self.val(), expected)) {
             $self.after('<label>' + msg + '</label>');
           } else {
             if ($label.is('label')) {
@@ -75,8 +80,9 @@
     for (var sel in rules) {
       for (var rule in rules[sel]) {
         var group = rules[sel][rule];
-        var errorMsg = (group['errorMsg']) ? group['errorMsg'] : '';
-        plugin.setCheck($(sel), rule, errorMsg);
+        var errorMsg = group['errorMsg'] ? group['errorMsg'] : '';
+        var expected =  group['expected'] ? group['expected'] : '';
+        plugin.setCheck($(sel), rule, expected, errorMsg);
       }
     }
   };
