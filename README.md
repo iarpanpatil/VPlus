@@ -20,11 +20,10 @@ General use notes
 6. The second value in native methods is the expected value (look at examples)
 
 #### Options
- You can customize the error handler and you can customize the plugin by attaching it to either a form or a button
- !If the plugin is attached to a button be sure to pass {onSubmit: true} in the options if you want the validations to occur only when the form is submited.
-  Otherwise the validation will take place when the input fields emit the blur event.
+ You can customize the validation error handler and the remove error method.
+  These methods can be injected in the config options (see JavaScript Example Below). Also if you wish to validate only when the form is submited you can do so
+  but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event.
 
- Have fun it is easy to use and will save you time and code.
 
 ```html
 <form id="myForm">
@@ -65,6 +64,9 @@ General use notes
             onSubmit: true,
             setError: function (ui, message){
                 //some custom error function if you wish or use the default function
+            },
+            clearErrors: function(element) {
+                 element.next('.error-message').remove();
             }
         });
     });

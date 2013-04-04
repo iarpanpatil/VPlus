@@ -14,22 +14,20 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
-//todos: Add validation for radio buttons
-//todos: Add validation for select boxes
-//todos: Add validation for textareas
-//todos: Add unit tests
+//todo: Add validation for radio buttons
+//todo: Add validation for select boxes
+//todo: Add validation for textareas
+//todo: Add error class to input element
 (function($) {
-  var setError;
+  var failHandler;
   var methods = {
     vpRequired: function(expected) {
       return this.val();
-
     },
     vpMinLength: function(expected) {
       return this.val().length >= expected;
-
     },
     vpMaxLength: function(expected) {
       return this.val().length <= expected;
@@ -43,64 +41,77 @@
     var defaults;
     var options;
 
-    if(typeof config == "string"){
+    if (typeof config == "string") {
       methods[config] = fn;
       return true;
     }
 
-    defaults =  {
-      onSubmit: false,
-      setError: function(element, message) {
-        console.log(message);
+    defaults = {
+      onSubmitOnly: false,
+      failHandler: function(element, message) {
+        element.after('<span class="error-message">' + message + '</span>');
+      },
+      clearErrors: function(element) {
+        element.next('.error-message').remove();
       }
     };
     options = $.extend({}, defaults, config);
-    setError = options.setError;
+    failHandler = options.failHandler;
 
     return this.each(function() {
       var $scope = $(this);
 
-      if (!options.onSubmit) {
-        $scope.on('blur', 'input', function() {
+      $scope.on('focus', 'input', function() {
+        options.clearErrors($(this));
+      });
+
+      $scope.on('submit', function(e) {
+        var $inputs = $scope.closest('form').find('input');
+        var errors = false;
+        $inputs.each(function() {
+         options.clearErrors($(this));
           var $element = $(this);
           var data = $element.data();
           $.each(data, function(key, org) {
             var args = org.slice(0);
             var error = args.shift();
             if (methods[key]) {
-              if(!methods[key].apply($element, args)){
-                setError($element, error);
+              if (!methods[key].apply($element, args)) {
+                failHandler($element, error);
+                e.preventDefault();
+                errors = true;
                 return false;
               }
             }
             return true;
           });
         });
-      } else {
-        $scope.on('click', function(e) {
-          e.preventDefault();
-          var $inputs = $scope.closest('form').find('input');
+        if(!errors){
+          $scope.trigger('valid');
+        }else{
+          $scope.trigger('notvalid');
+        }
+      });
 
-          $inputs.each(function() {
-            var $element = $(this);
-            var data = $element.data();
-
-            //fixmes: share this functionality and save about 5 lines of code
-            $.each(data, function(key, org) {
-              var args = org.slice(0);
-
-              var error = args.shift();
-              if (methods[key]) {
-                if(!methods[key].apply($element, args)){
-                  setError($element, error);
-                  return false;
-                }
-              }
-              return true;
-            });
-          })
-        });
+      if (options.onSubmitOnly) {
+        return true;
       }
+
+      $scope.on('blur', 'input', function() {
+        var $element = $(this);
+        var data = $element.data();
+        $.each(data, function(key, org) {
+          var args = org.slice(0);
+          var error = args.shift();
+          if (methods[key]) {
+            if (!methods[key].apply($element, args)) {
+              failHandler($element, error);
+              return false;
+            }
+          }
+          return true;
+        });
+      });
     });
   };
 }(jQuery));

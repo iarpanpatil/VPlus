@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-<form id="myForm">
+<form id="myForm" action="hello.php" method="post">
     <fieldset>
         <legend>My Special Fields</legend>
         <div>
@@ -35,10 +35,11 @@
         <div>
             <label for="password2">Confirm Password</label>
             <input type="password" id="password2"
+                   data-vp-required='["Cannot be empty.", true]'
                    data-vp-match-field='["Passwords do not match.","#password"]'>
         </div>
         <div>
-            <label>Custom Validation</label>
+            <label>Custom</label>
             <input type="text" id="custom"
                    data-vp-custom='["something is not cool"]' >
         </div>
@@ -50,9 +51,53 @@
 <script src="../js/vPlus/jquery.vplus.min.js"></script>
 <script>
     $().ready(function() {
-        $('#myForm').vPlus();
-        $('#myForm').vPlus('vpCustom', function (){
 
+        //basic usage
+        $('#myForm').vPlus();
+
+        /* below is an example of the plugin if you want to add a custom validation method using an ajax sync function*/
+        //add a custom validation plugin   !optional
+        $('#myForm').vPlus('vpCustom', function (errorMessage){
+
+            //to access the element the validation is requested on use the "this" keyword.
+            var element = this;
+            $.ajax({
+                url: '/api/server-side-validation',
+                type:'post',
+                dataType:'json',
+                data: {
+                    fieldValue: element.val()
+                },
+                async: false, // should be done synchronously
+                success: function (response){
+                    return true;
+                },
+                error: function (erorr){
+                    //handle error
+                }
+            });
+
+            //show the error message
+            element.after('<span>' + errorMessage + '</span>');
+            return false;
+        });
+
+      /*Below is the optional event api and how it might be implemented */
+
+        //attach a listener to the form for the valid even if you want to listen to that event !Optional
+        $('#myForm').on('valid', function () {
+            console.log('Form is valid');
+        });
+
+
+        //prevent form submission if you want to listen to the valid event
+        $('#myForm').submit(function (e) {
+            e.preventDefault();
+        });
+
+        //attach an even to a failed validation event !optional
+        $('#myForm').on('notvalid', function () {
+            console.log('Form not valid');
         });
     });
 </script>
