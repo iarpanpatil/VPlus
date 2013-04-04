@@ -19,7 +19,7 @@ General use notes
 5. The first argument in the array of arguments is always the Error Message. Evene in cusotm methods always include the error method as the first array value
 6. The second value in native methods is the expected value (look at examples)
 
-#### Options
+## Options
  You can customize the validation error handler and the remove error method.
   These methods can be injected in the config options (see JavaScript Example Below). Also if you wish to validate only when the form is submited you can do so
   but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event.
@@ -61,8 +61,8 @@ General use notes
 ```js
     $(function() {
         $('#submit').vPlus({
-            onSubmit: true,
-            setError: function (ui, message){
+            onSubmitOnly: true,
+            failHandler: function (ui, message){
                 //some custom error function if you wish or use the default function
             },
             clearErrors: function(element) {
@@ -99,20 +99,37 @@ There may be a circumstance where you might want to add your own validation rule
 ```
 
 ```js
-    $().ready(function() {
-           $('#myForm').vPlus();
-
            $('#myForm').vPlus('vpCustom', function (){
-
            //custom code in here whatever you need ajax calls or otherwise
-
                 //return true for passed validation
-
                 //returnh false for failed validation
            });
        });
 ```
 
 
+## Events
 
+The plugin also gives you a few events that you can register for.
+-valid
+-notvalid
 
+You can register for them in the following mananer
+```js
+            //prevent form submission if you want to listen to the valid event
+            $('#myForm').submit(function(e) {
+                e.preventDefault();
+            });
+
+            //attach a listener to the form for the valid even if you want to listen to that event !Optional
+            $('#myForm').on('valid', function() {
+                console.log('Form is valid');
+            });
+
+            //attach an even to a failed validation event !optional
+            $('#myForm').on('notvalid', function() {
+                console.log('Form not valid');
+            });
+```
+
+If you have any issue look at the examples included or post an issue

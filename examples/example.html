@@ -41,7 +41,7 @@
         <div>
             <label>Custom</label>
             <input type="text" id="custom"
-                   data-vp-custom='["something is not cool"]' >
+                   data-vp-custom='["something is not cool"]'>
         </div>
         <button id="submit">Submit</button>
     </fieldset>
@@ -57,22 +57,22 @@
 
         /* below is an example of the plugin if you want to add a custom validation method using an ajax sync function*/
         //add a custom validation plugin   !optional
-        $('#myForm').vPlus('vpCustom', function (errorMessage){
+        $('#myForm').vPlus('vpCustom', function(errorMessage) {
 
             //to access the element the validation is requested on use the "this" keyword.
             var element = this;
             $.ajax({
                 url: '/api/server-side-validation',
-                type:'post',
-                dataType:'json',
+                type: 'post',
+                dataType: 'json',
                 data: {
                     fieldValue: element.val()
                 },
                 async: false, // should be done synchronously
-                success: function (response){
+                success: function(response) {
                     return true;
                 },
-                error: function (erorr){
+                error: function(erorr) {
                     //handle error
                 }
             });
@@ -82,21 +82,20 @@
             return false;
         });
 
-      /*Below is the optional event api and how it might be implemented */
-
-        //attach a listener to the form for the valid even if you want to listen to that event !Optional
-        $('#myForm').on('valid', function () {
-            console.log('Form is valid');
-        });
-
+        /*Below is the optional event api and how it might be implemented */
 
         //prevent form submission if you want to listen to the valid event
-        $('#myForm').submit(function (e) {
+        $('#myForm').submit(function(e) {
             e.preventDefault();
         });
 
+        //attach a listener to the form for the valid even if you want to listen to that event !Optional
+        $('#myForm').on('valid', function() {
+            console.log('Form is valid');
+        });
+
         //attach an even to a failed validation event !optional
-        $('#myForm').on('notvalid', function () {
+        $('#myForm').on('notvalid', function() {
             console.log('Form not valid');
         });
     });
