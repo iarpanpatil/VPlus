@@ -19,7 +19,7 @@ General use notes
 5. The first argument in the array of arguments is always the Error Message. Evene in cusotm methods always include the error method as the first array value
 6. The second value in native methods is the expected value (look at examples)
 
- #### Options
+#### Options
  You can customize the error handler and you can customize the plugin by attaching it to either a form or a button
  !If the plugin is attached to a button be sure to pass {onSubmit: true} in the options if you want the validations to occur only when the form is submited.
   Otherwise the validation will take place when the input fields emit the blur event.
