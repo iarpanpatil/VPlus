@@ -16,26 +16,31 @@
         <div>
             <label for="username">Username</label>
             <input type="text" id="username"
-                   data-vp-required='[true,"Cannot be empty."]'
-                   data-vp-min-length='[6,"Must be at least 6 characters."]'
-                   data-vp-max-length='[10,"Cannot be more than 12 characters."]'>
+                   data-vp-required='["Cannot be empty.", true]'
+                   data-vp-min-length='["Must be at least 6 characters.", 6]'
+                   data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
         </div>
         <div>
             <label for="email">Email</label>
             <input type="text" id="email"
-                   data-vp-required='[true,"Cannot be empty."]'>
+                   data-vp-required='["Cannot be empty.", true]'>
         </div>
         <div>
             <label for="password">Password</label>
             <input type="password" id="password"
-                   data-vp-required='[true,"Cannot be empty."]'
-                   data-vp-min-length='[6,"Must be at least 6 characters."]'
-                   data-vp-max-length='[10,"Cannot be more than 12 characters."]'>
+                   data-vp-required='["Cannot be empty.", true]'
+                   data-vp-min-length='["Must be at least 6 characters.", 10]'
+                   data-vp-max-length='["Cannot be more than 12 characters.", 10]'>
         </div>
         <div>
             <label for="password2">Confirm Password</label>
             <input type="password" id="password2"
-                   data-vp-match-field='["#password", "Passwords do not match."]'>
+                   data-vp-match-field='["#password"]'>
+        </div>
+        <div>
+            <label>Custom Validation</label>
+            <input type="text" id="custom"
+                   data-vp-custom='["something is not cool"]' >
         </div>
         <button id="submit">Submit</button>
     </fieldset>
@@ -45,7 +50,11 @@
 <script src="../js/jquery.vplus.js"></script>
 <script>
     $().ready(function() {
-        $('#submit').vPlus({onSubmit:true});
+        $('#myForm').vPlus();
+        $('#myForm').vPlus('vpCustom', function (){
+
+
+        });
     });
 </script>
 </body>

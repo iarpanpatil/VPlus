@@ -1,44 +1,39 @@
 (function($) {
+  var setError;
+  var methods = {
+    vpRequired: function(expected) {
+      return this.val();
 
-  $.fn.vPlus = function(config) {
+    },
+    vpMinLength: function(expected) {
+      return this.val().length >= expected;
 
-    var defaults = {
+    },
+    vpMaxLength: function(expected) {
+      return this.val().length <= expected;
+    },
+    vpMatchField: function(fieldSelector) {
+      return this.val() === $(fieldSelector).val();
+    }
+  };
+
+  $.fn.vPlus = function(config, fn) {
+    var defaults;
+    var options;
+
+    if(typeof config == "string"){
+      methods[config] = fn;
+      return true;
+    }
+
+    defaults =  {
       onSubmit: false,
       setError: function(element, message) {
         console.log(message);
       }
     };
-    var options = $.extend({}, defaults, config);
-    var methods = {
-      vpRequired: function(expected, message) {
-        if (!this.val()) {
-          options.setError(this, message);
-          return false;
-        }
-        return true;
-      },
-      vpMinLength: function(expected, message) {
-        if (this.val().length < expected) {
-          options.setError(this, message);
-          return false;
-        }
-        return true;
-      },
-      vpMaxLength: function(expected, message) {
-        if (this.val().length > expected) {
-          options.setError(this, message);
-          return false;
-        }
-        return true;
-      },
-      vpMatchField: function(fieldSelector, message) {
-        if (this.val() !== $(fieldSelector).val()) {
-          options.setError(this, message);
-          return false;
-        }
-        return true;
-      }
-    };
+    options = $.extend({}, defaults, config);
+    setError = options.setError;
 
     return this.each(function() {
       var $scope = $(this);
@@ -47,9 +42,13 @@
         $scope.on('blur', 'input', function() {
           var $element = $(this);
           var data = $element.data();
-          $.each(data, function(key, value) {
+          $.each(data, function(key, args) {
+            var error = args.shift();
             if (methods[key]) {
-              return methods[key].apply($element, value);
+              if(!methods[key].apply($element, args)){
+                setError($element, error);
+                return false;
+              }
             }
             return true;
           });
@@ -59,16 +58,20 @@
           e.preventDefault();
           var $inputs = $scope.closest('form').find('input');
 
-            $inputs.each(function () {
-              var $element = $(this);
-              var data = $element.data();
-              $.each(data, function(key, value) {
-                if (methods[key]) {
-                  return methods[key].apply($element, value);
+          $inputs.each(function() {
+            var $element = $(this);
+            var data = $element.data();
+            $.each(data, function(key, args) {
+              var error = args.shift();
+              if (methods[key]) {
+                if(!methods[key].apply($element, args)){
+                  setError($element, error);
+                  return false;
                 }
-                return true;
-              });
-            })
+              }
+              return true;
+            });
+          })
         });
       }
     });
