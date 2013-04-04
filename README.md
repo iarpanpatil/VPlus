@@ -19,12 +19,6 @@ General use notes
 5. The first argument in the array of arguments is always the Error Message. Evene in cusotm methods always include the error method as the first array value
 6. The second value in native methods is the expected value (look at examples)
 
-## Options
- You can customize the validation error handler and the remove error method.
-  These methods can be injected in the config options (see JavaScript Example Below). Also if you wish to validate only when the form is submited you can do so
-  but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event.
-
-
 ```html
 <form id="myForm">
     <fieldset>
@@ -58,6 +52,12 @@ General use notes
 </form>
 ```
 
+### Options
+ You can customize the validation error handler and the remove error method.
+  These methods can be injected in the config options (see JavaScript Example Below). Also if you wish to validate only when the form is submited you can do so
+  but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event.
+
+
 ```js
     $(function() {
         $('#submit').vPlus({
@@ -72,7 +72,7 @@ General use notes
     });
 ```
 
-## Custom Validation API
+### Custom Validation API
 
 There may be a circumstance where you might want to add your own validation rules. For this there is a simpel API but there are a few things you need to know first.
 
@@ -108,7 +108,7 @@ There may be a circumstance where you might want to add your own validation rule
 ```
 
 
-## Events
+### Events
 
 The plugin also gives you a few events that you can register for.
 -valid
@@ -132,4 +132,4 @@ You can register for them in the following mananer
             });
 ```
 
-If you have any issue look at the examples included or post an issue
+If you have any issues look at the examples included or post an issue int he tracker.
