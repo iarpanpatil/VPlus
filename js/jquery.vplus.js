@@ -1,5 +1,10 @@
 (function($) {
   var setError;
+
+  //todos: Add validation for radio buttons
+  //todos: Add validation for select boxes
+  //todos: Add validation for textareas
+  //todos: Add unit tests
   var methods = {
     vpRequired: function(expected) {
       return this.val();
@@ -42,7 +47,8 @@
         $scope.on('blur', 'input', function() {
           var $element = $(this);
           var data = $element.data();
-          $.each(data, function(key, args) {
+          $.each(data, function(key, org) {
+            var args = org.slice(0);
             var error = args.shift();
             if (methods[key]) {
               if(!methods[key].apply($element, args)){
@@ -61,7 +67,11 @@
           $inputs.each(function() {
             var $element = $(this);
             var data = $element.data();
-            $.each(data, function(key, args) {
+
+            //fixmes: share this functionality and save about 5 lines of code
+            $.each(data, function(key, org) {
+              var args = org.slice(0);
+
               var error = args.shift();
               if (methods[key]) {
                 if(!methods[key].apply($element, args)){
