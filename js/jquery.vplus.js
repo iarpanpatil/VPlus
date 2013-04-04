@@ -1,89 +1,76 @@
 (function($) {
-  /**
-   * @param {object} config
-   */
+
   $.fn.vPlus = function(config) {
 
     var defaults = {
-      errorClass: 'error',
-      expressions: {
-        email: '',
-        url: ''
+      onSubmit: false,
+      setError: function(element, message) {
+        console.log(message);
       }
     };
-    var options = $.extend(defaults, config);
-    var plugin = this;
-    var $form = $(this);
-    var rules = options.rules;
-
-    //why do we do this?
-    $form.find('.validation-rules').remove();
-
-    /**
-     * @param {String} val
-     * @return {Boolean}
-     */
-    plugin.isRequired = function(val) {
-      return (val != '');
+    var options = $.extend({}, defaults, config);
+    var methods = {
+      vpRequired: function(expected, message) {
+        if (!this.val()) {
+          options.setError(this, message);
+          return false;
+        }
+        return true;
+      },
+      vpMinLength: function(expected, message) {
+        if (this.val().length < expected) {
+          options.setError(this, message);
+          return false;
+        }
+        return true;
+      },
+      vpMaxLength: function(expected, message) {
+        if (this.val().length > expected) {
+          options.setError(this, message);
+          return false;
+        }
+        return true;
+      },
+      vpMatchField: function(fieldSelector, message) {
+        if (this.val() !== $(fieldSelector).val()) {
+          options.setError(this, message);
+          return false;
+        }
+        return true;
+      }
     };
 
-    /**
-     * @param {String} val
-     * @param {Number} expected
-     * @return {Boolean}
-     */
-    plugin.maxLength = function(val, expected) {
-      return (val.length <= expected);
-    };
+    return this.each(function() {
+      var $scope = $(this);
 
-    /**
-     * @param {String} val
-     * @param {Number} expected
-     * @return {Boolean}
-     */
-    plugin.minLength = function(val, expected) {
-      return (val.length >= expected);
-    };
-
-    /**
-     * @example DD/MM/YYYY or DD-MM-YYYY
-     * @param {String} val
-     * @return {Boolean}
-     */
-    plugin.isValidDate = function(val) {
-      var regex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
-      return val.search(regex) !== -1;
-    };
-
-
-    plugin.equalElementValue = function (val, expected) {
-        return (val === $(expected).val());
-    };
-
-    plugin.setCheck = function($elem, rule,expected, msg) {
-      if (plugin.hasOwnProperty(rule)) {
-        $elem.blur(function() {
-          var $self = $(this);
-          var $label = $self.next();
-
-          if (!plugin[rule]($self.val(), expected)) {
-            $self.after('<label>' + msg + '</label>');
-          } else {
-            if ($label.is('label')) {
-              $label.remove();
+      if (!options.onSubmit) {
+        $scope.on('blur', 'input', function() {
+          var $element = $(this);
+          var data = $element.data();
+          $.each(data, function(key, value) {
+            if (methods[key]) {
+              return methods[key].apply($element, value);
             }
-          }
+            return true;
+          });
+        });
+      } else {
+        $scope.on('click', function(e) {
+          e.preventDefault();
+          var $inputs = $scope.closest('form').find('input');
+
+            $inputs.each(function () {
+              var $element = $(this);
+              var data = $element.data();
+              $.each(data, function(key, value) {
+                if (methods[key]) {
+                  return methods[key].apply($element, value);
+                }
+                return true;
+              });
+            })
         });
       }
-    };
-
-    for (var sel in rules) {
-      for (var rule in rules[sel]) {
-        var group = rules[sel][rule];
-        var errorMsg = group['errorMsg'] ? group['errorMsg'] : '';
-        var expected =  group['expected'] ? group['expected'] : '';
-        plugin.setCheck($(sel), rule, expected, errorMsg);
-      }
-    }
+    });
   };
 }(jQuery));
