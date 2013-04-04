@@ -1,8 +1,8 @@
 load:
-  - js/lib/jquery.js
-  - js/lib/jasmine-1.1.0.js
-  - js/lib/JasmineAdapter-1.1.2.js
-  - js/lib/plugins/jquery-vplus.js
+  - js/vendor/jquery.js
+  - js/vendor/equiv.js
+  - js/vendor/QUnitAdapter.js
+  - js/vPlus/jquery.vplus.js
 
 test:
   - tests/unit-tests/*.js
