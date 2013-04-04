@@ -5,9 +5,7 @@ Selector based validation for jQuery. You aren't
 bound to just form input field names, you can use any
 selector (class or id)
 
-### Not Stable Yet! Stand by for an update :)
-
-#### Usage
+## Basic Use
 
 ```html
 <form id="myForm">
@@ -53,14 +51,14 @@ selector (class or id)
     });
 ```
 
-## API
+## Custom Validation API
 
 There may be a circumstance where you might want to add your own validation rules for this there is a simpel API, but there are a few things you need to know first.
 
 -----
 
 1. You need to still speicfy a error message in the custom attribute as the first value in the array.
-2. You also need to be aware that the validation must return false for any failed validation
+2. You also need to be aware that the validation must return false for any failed validation and true for passed validation
 3. The attribute name is dashed cased while the validation function name is camelCased.
 
 -----
@@ -83,6 +81,9 @@ There may be a circumstance where you might want to add your own validation rule
     $().ready(function() {
            $('#myForm').vPlus();
            $('#myForm').vPlus('vpCustom', function (){
+
+           //custom code in here whatever you need ajax calls or otherwise
+
                 //return true for passed validation
 
                 //returnh false for failed validation
