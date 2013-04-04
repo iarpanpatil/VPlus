@@ -19,9 +19,7 @@
 //todos: Add validation for radio buttons
 //todos: Add validation for select boxes
 //todos: Add validation for textareas
-//todos: Minify the plugin (set up a build process with grunt)
 //todos: Add unit tests
-
 (function($) {
   var setError;
   var methods = {
