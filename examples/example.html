@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        label {
+            width: 130px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<form id="myForm" action="hello.php" method="post">
+    <fieldset>
+        <legend>My Special Fields</legend>
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username"
+                   data-vp-required='["Cannot be empty.", true]'
+                   data-vp-min-length='["Must be at least 6 characters.", 6]'
+                   data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
+        </div>
+        <div>
+            <label for="email">Email</label>
+            <input type="text" id="email"
+                   data-vp-required='["Cannot be empty.", true]'>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password"
+                   data-vp-required='["Cannot be empty.", true]'
+                   data-vp-min-length='["Must be at least 6 characters.", 6]'
+                   data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
+        </div>
+        <div>
+            <label for="password2">Confirm Password</label>
+            <input type="password" id="password2"
+                   data-vp-required='["Cannot be empty.", true]'
+                   data-vp-match-field='["Passwords do not match.","#password"]'>
+        </div>
+        <div>
+            <label>Custom</label>
+            <input type="text" id="custom"
+                   data-vp-custom='["something is not cool"]'>
+        </div>
+        <button id="submit">Submit</button>
+    </fieldset>
+</form>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="../js/vPlus/jquery.vplus.min.js"></script>
+<script>
+    $().ready(function() {
+
+        //basic usage
+        $('#myForm').vPlus();
+
+        /* below is an example of the plugin if you want to add a custom validation method using an ajax sync function*/
+        //add a custom validation plugin   !optional
+        $('#myForm').vPlus('vpCustom', function(errorMessage) {
+
+            //to access the element the validation is requested on use the "this" keyword.
+            var element = this;
+            $.ajax({
+                url: '/api/server-side-validation',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    fieldValue: element.val()
+                },
+                async: false, // should be done synchronously
+                success: function(response) {
+                    return true;
+                },
+                error: function(erorr) {
+                    //handle error
+                }
+            });
+
+            //show the error message
+            element.after('<span>' + errorMessage + '</span>');
+            return false;
+        });
+
+        /*Below is the optional event api and how it might be implemented */
+
+        //prevent form submission if you want to listen to the valid event
+        $('#myForm').submit(function(e) {
+            e.preventDefault();
+        });
+
+        //attach a listener to the form for the valid even if you want to listen to that event !Optional
+        $('#myForm').on('valid', function() {
+            console.log('Form is valid');
+        });
+
+        //attach an even to a failed validation event !optional
+        $('#myForm').on('notvalid', function() {
+            console.log('Form not valid');
+        });
+    });
+</script>
+</body>
+</html>
