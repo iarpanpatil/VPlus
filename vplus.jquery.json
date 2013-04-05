@@ -1,0 +1,34 @@
+{
+  "name": "vPlus",
+  "title": "jQuery vPlus",
+  "description": "jQuery plugin for form validation using attributes for faster cleaner code.",
+  "keywords": [
+    "color",
+    "animation"
+  ],
+  "version": "0.1.0",
+  "author": {
+    "name": "Edgar Martinez",
+    "url": "https://github.com/thiswildorchid"
+  },
+  "maintainers": [
+    {
+      "name": "Edgar Martinez",
+      "email": "admin@orchid1software.com",
+      "url": "http://orchid1software.com"
+    }
+  ],
+  "licenses": [
+    {
+      "type": "GNU General Public License Version 3",
+      "url": "https://github.com/thiswildorchid/VPlus/blob/master/LICENSE.txt"
+    }
+  ],
+  "bugs": "https://github.com/thiswildorchid/VPlus/issues",
+  "homepage": "https://github.com/thiswildorchid/VPlus",
+  "docs": "https://github.com/thiswildorchid/VPlus",
+  "download": "https://github.com/thiswildorchid/VPlus/archive/master.zip",
+  "dependencies": {
+    "jquery": ">=1.9.*"
+  }
+}
