@@ -3,12 +3,13 @@
   "title": "jQuery vPlus",
   "description": "jQuery plugin for form validation using attributes for faster cleaner code.",
   "keywords": [
-    "color",
-    "animation"
+    "validation",
+    "form validation"
   ],
   "version": "0.1.0",
   "author": {
     "name": "Edgar Martinez",
+    "email": "admin@orchid1software.com",
     "url": "https://github.com/thiswildorchid"
   },
   "maintainers": [
