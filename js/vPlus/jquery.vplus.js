@@ -19,27 +19,12 @@
 //todo: Add validation for radio buttons
 //todo: Add validation for select boxes
 //todo: Add validation for textareas
-//todo: Add error class to input element
 (function($) {
   var failHandler;
-  var methods = {
-    vpRequired: function(expected) {
-      return this.val();
-    },
-    vpMinLength: function(expected) {
-      return this.val().length >= expected;
-    },
-    vpMaxLength: function(expected) {
-      return this.val().length <= expected;
-    },
-    vpMatchField: function(fieldSelector) {
-      return this.val() === $(fieldSelector).val();
-    }
-  };
-
   $.fn.vPlus = function(config, fn) {
     var defaults;
     var options;
+    var methods = $.fn.vPlus.methods;
 
     if (typeof config == "string") {
       methods[config] = fn;
@@ -48,10 +33,13 @@
 
     defaults = {
       onSubmitOnly: false,
+      errorClass: 'error',
       failHandler: function(element, message) {
+        element.addClass(options.errorClass);
         element.after('<span class="error-message">' + message + '</span>');
       },
       clearErrors: function(element) {
+        element.removeClass(options.errorClass);
         element.next('.error-message').remove();
       }
     };
@@ -113,5 +101,20 @@
         });
       });
     });
+  };
+
+  $.fn.vPlus.methods = {
+    vpRequired: function(expected) {
+      return this.val();
+    },
+    vpMinLength: function(expected) {
+      return this.val().length >= expected;
+    },
+    vpMaxLength: function(expected) {
+      return this.val().length <= expected;
+    },
+    vpMatchField: function(fieldSelector) {
+      return this.val() === $(fieldSelector).val();
+    }
   };
 }(jQuery));

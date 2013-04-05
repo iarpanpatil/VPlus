@@ -57,7 +57,7 @@
 
         /* below is an example of the plugin if you want to add a custom validation method using an ajax sync function*/
         //add a custom validation plugin   !optional
-        $('#myForm').vPlus('vpCustom', function(errorMessage) {
+        $('#myForm').vPlus('vpCustom', function() {
 
             //to access the element the validation is requested on use the "this" keyword.
             var element = this;
@@ -72,13 +72,11 @@
                 success: function(response) {
                     return true;
                 },
-                error: function(erorr) {
+                error: function(error) {
                     //handle error
                 }
             });
 
-            //show the error message
-            element.after('<span>' + errorMessage + '</span>');
             return false;
         });
 

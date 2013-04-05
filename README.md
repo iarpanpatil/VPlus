@@ -20,47 +20,49 @@ General use notes
 6. The second value in native methods is the expected value (look at examples)
 
 ```html
-<form id="myForm">
-    <fieldset>
-        <legend>My Special Fields</legend>
-        <div>
-            <label for="username">Username</label>
-            <input type="text" id="username"
-                   data-vp-required='["Cannot be empty.", true]'
-                   data-vp-min-length='["Must be at least 6 characters.", 6]'
-                   data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
-        </div>
-        <div>
-            <label for="email">Email</label>
-            <input type="text" id="email"
-                   data-vp-required='["Cannot be empty.", true]'>
-        </div>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" id="password"
-                   data-vp-required='["Cannot be empty.", true]'
-                   data-vp-min-length='["Must be at least 6 characters.", 6]'
-                   data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
-        </div>
-        <div>
-            <label for="password2">Confirm Password</label>
-            <input type="password" id="password2"
-                   data-vp-match-field='["Passwords do not match.","#password"]'>
-        </div>
-        <button id="submit">Submit</button>
-    </fieldset>
-</form>
+    <form id="myForm">
+        <fieldset>
+            <legend>My Special Fields</legend>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username"
+                       data-vp-required='["Cannot be empty.", true]'
+                       data-vp-min-length='["Must be at least 6 characters.", 6]'
+                       data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="text" id="email"
+                       data-vp-required='["Cannot be empty.", true]'>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password"
+                       data-vp-required='["Cannot be empty.", true]'
+                       data-vp-min-length='["Must be at least 6 characters.", 6]'
+                       data-vp-max-length='["Cannot be more than 10 characters.", 10]'>
+            </div>
+            <div>
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2"
+                       data-vp-match-field='["Passwords do not match.","#password"]'>
+            </div>
+            <button id="submit">Submit</button>
+        </fieldset>
+    </form>
 ```
 
 ### Options
  You can customize the validation error handler and the remove error method.
   These methods can be injected in the config options (see JavaScript Example Below). Also if you wish to validate only when the form is submited you can do so
-  but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event.
+  but be sure to pass {onSubmit: true} in the options. Otherwise the validation will take place when the input fields emit the blur event. There is also a custom error class
+  that you can define the default is "error".
 
 
 ```js
     $(function() {
         $('#submit').vPlus({
+            errorClass: 'error',
             onSubmitOnly: true,
             failHandler: function (ui, message){
                 //some custom error function if you wish or use the default function
@@ -85,17 +87,17 @@ There may be a circumstance where you might want to add your own validation rule
 -----
 
 ```html
-<form id="myForm">
-    <fieldset>
-        <legend>My Custom Field</legend>
-        <div>
-            <label>Custom Validation</label>
-            <input type="text" id="custom"
-                   data-vp-custom='["something is not cool"]' >
-        </div>
-        <button id="submit">Submit</button>
-    </fieldset>
-</form>
+    <form id="myForm">
+        <fieldset>
+            <legend>My Custom Field</legend>
+            <div>
+                <label>Custom Validation</label>
+                <input type="text" id="custom"
+                       data-vp-custom='["something is not cool"]' >
+            </div>
+            <button id="submit">Submit</button>
+        </fieldset>
+    </form>
 ```
 
 ```js
