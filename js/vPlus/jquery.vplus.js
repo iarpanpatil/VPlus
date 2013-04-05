@@ -20,7 +20,6 @@
 //todo: Add validation for select boxes
 //todo: Add validation for textareas
 (function($) {
-  var failHandler;
   $.fn.vPlus = function(config, fn) {
     var defaults;
     var options;
@@ -33,18 +32,12 @@
 
     defaults = {
       onSubmitOnly: false,
-      errorClass: 'error',
-      failHandler: function(element, message) {
-        element.addClass(options.errorClass);
-        element.after('<span class="error-message">' + message + '</span>');
-      },
-      clearErrors: function(element) {
-        element.removeClass(options.errorClass);
-        element.next('.error-message').remove();
-      }
+      errorClass: $.fn.vPlus.errorClass,
+      failHandler: $.fn.vPlus.failHandler,
+      clearErrors: $.fn.vPlus.clearErrors
     };
     options = $.extend({}, defaults, config);
-    failHandler = options.failHandler;
+
 
     return this.each(function() {
       var $scope = $(this);
@@ -57,7 +50,7 @@
         var $inputs = $scope.closest('form').find('input');
         var errors = false;
         $inputs.each(function() {
-         options.clearErrors($(this));
+         options.clearErrors($(this), options.errorClass);
           var $element = $(this);
           var data = $element.data();
           $.each(data, function(key, org) {
@@ -65,7 +58,7 @@
             var error = args.shift();
             if (methods[key]) {
               if (!methods[key].apply($element, args)) {
-                failHandler($element, error);
+                options.failHandler($element, error, options.errorClass);
                 e.preventDefault();
                 errors = true;
                 return false;
@@ -93,7 +86,7 @@
           var error = args.shift();
           if (methods[key]) {
             if (!methods[key].apply($element, args)) {
-              failHandler($element, error);
+              options.failHandler($element, error, options.errorClass);
               return false;
             }
           }
@@ -103,8 +96,10 @@
     });
   };
 
+  $.fn.vPlus.errorClass = 'error';
+
   $.fn.vPlus.methods = {
-    vpRequired: function(expected) {
+    vpRequired: function() {
       return this.val();
     },
     vpMinLength: function(expected) {
@@ -117,4 +112,14 @@
       return this.val() === $(fieldSelector).val();
     }
   };
+
+  $.fn.vPlus.failHandler = function (element, message, errorClass) {
+    element.addClass(errorClass);
+    element.after('<span class="error-message">' + message + '</span>');
+  };
+
+  $.fn.vPlus.clearErrors = function (element, errorClass) {
+    element.removeClass(errorClass);
+    element.next('.error-message').remove();
+  }
 }(jQuery));
