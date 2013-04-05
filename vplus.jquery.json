@@ -1,5 +1,5 @@
 {
-  "name": "vPlus",
+  "name": "vplus",
   "title": "jQuery vPlus",
   "description": "jQuery plugin for form validation using attributes for faster cleaner code.",
   "keywords": [
@@ -29,6 +29,6 @@
   "docs": "https://github.com/thiswildorchid/VPlus",
   "download": "https://github.com/thiswildorchid/VPlus/archive/master.zip",
   "dependencies": {
-    "jquery": ">=1.9.*"
+    "jquery": ">=1.4.3"
   }
 }
